@@ -26,7 +26,7 @@ function Header() {
   }, [enabled]);
 
   return (
-    <header id="header" className="border-b  ring-1 ring-black/5">
+    <header id="header" className="shadow-sm ring-1 ring-black/5">
       <div className="flex justify-between bg-white px-20 py-7 dark:bg-dark-blue">
         <div className="">
           <h1 className="text-lg font-extrabold">Where in the world?</h1>
