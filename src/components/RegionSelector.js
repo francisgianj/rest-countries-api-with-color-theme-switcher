@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
 import { Fragment } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCountriesByRegion,
+  resetCountries,
+  reset,
+} from "../features/country/countrySlice";
 
 const regions = [
   { id: 0, name: "Filter by Region", disabled: true },
@@ -14,8 +19,13 @@ const regions = [
 ];
 
 function RegionSelector() {
+  const dispatch = useDispatch();
+
   const [selectedRegion, setSelectedRegion] = useState(regions[0]);
-  const [countries, setCountries] = useState([]);
+
+  const { isError, errorMessage } = useSelector(
+    (state) => state.country
+  );
 
   useEffect(() => {
     //  Escape event listener
@@ -28,38 +38,35 @@ function RegionSelector() {
     window.addEventListener("keydown", onKeyDown);
 
     // Get Region countries
-    const REGION_API = "https://restcountries.com/v3.1/region/";
+    if (isError) {
+      console.log(errorMessage);
+    }
+
     if (selectedRegion.id !== 0) {
-      axios
-        .get(`${REGION_API}/${selectedRegion.name}`)
-        .then((res) => {
-          setCountries(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      dispatch(getCountriesByRegion(selectedRegion.name));
     } else {
-      setCountries([]);
+      dispatch(resetCountries());
     }
 
     return () => {
       window.removeEventListener("keydown", onKeyDown);
+      dispatch(reset());
     };
-  }, [selectedRegion]);
+  }, [selectedRegion, isError, errorMessage, dispatch]);
 
   return (
     <div
-      className="h-14 w-48 cursor-pointer rounded border-none 
-            bg-white shadow dark:bg-dark-blue ml-20"
+      className="ml-20 h-14 w-48 cursor-pointer rounded 
+            border-none bg-white shadow dark:bg-dark-blue"
     >
       <Listbox value={selectedRegion} onChange={setSelectedRegion}>
-        <Listbox.Button className="flex h-full w-full items-center justify-between bg-transparent px-4">
+        <Listbox.Button className="flex h-full w-full items-center justify-between bg-transparent px-6">
           <div>{selectedRegion.name}</div>
           <BiChevronDown className="ml-2" />
         </Listbox.Button>
         <Listbox.Options
-          className="mt-1 w-48 rounded bg-white py-4 
-                    text-sm dark:bg-dark-blue shadow"
+          className="z-100 relative mt-1 w-48 rounded 
+                    bg-white py-1 text-sm shadow dark:bg-dark-blue"
         >
           {regions.map((region) => (
             <Listbox.Option
@@ -72,7 +79,7 @@ function RegionSelector() {
                 <div
                   className={`${
                     region.disabled && "hidden"
-                  } space-x-1 px-4 py-2 ${
+                  } space-x-1 px-6 py-1 ${
                     active
                       ? "bg-very-light-gray dark:bg-very-dark-blue1"
                       : "bg-white dark:bg-dark-blue"
@@ -85,11 +92,6 @@ function RegionSelector() {
           ))}
         </Listbox.Options>
       </Listbox>
-      <div>
-        {countries.map((country) => (
-          <pre>{JSON.stringify(country.name.common)}</pre>
-        ))}
-      </div>
     </div>
   );
 }
