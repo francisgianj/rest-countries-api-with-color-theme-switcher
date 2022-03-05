@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Listbox } from "@headlessui/react";
 import { Fragment } from "react";
 import { BiChevronDown } from "react-icons/bi";
@@ -8,6 +8,10 @@ import {
   resetCountries,
   reset,
 } from "../features/country/countrySlice";
+import {
+  setSelectedRegion,
+  resetSelectedRegion,
+} from "../features/appState/appStateSlice";
 
 const regions = [
   { id: 0, name: "Filter by Region", disabled: true },
@@ -21,17 +25,15 @@ const regions = [
 function RegionSelector() {
   const dispatch = useDispatch();
 
-  const [selectedRegion, setSelectedRegion] = useState(regions[0]);
+  const { selectedRegion } = useSelector((state) => state.appState);
 
-  const { isError, errorMessage } = useSelector(
-    (state) => state.country
-  );
+  const { isError, errorMessage } = useSelector((state) => state.country);
 
   useEffect(() => {
     //  Escape event listener
     function onKeyDown(e) {
       if (e.key === "Escape") {
-        setSelectedRegion(regions[0]);
+        dispatch(resetSelectedRegion());
       }
     }
 
@@ -54,19 +56,23 @@ function RegionSelector() {
     };
   }, [selectedRegion, isError, errorMessage, dispatch]);
 
+  const onChange = (e) => {
+    dispatch(setSelectedRegion(e));
+  };
+
   return (
     <div
       className="ml-20 h-14 w-48 cursor-pointer rounded 
             border-none bg-white shadow dark:bg-dark-blue"
     >
-      <Listbox value={selectedRegion} onChange={setSelectedRegion}>
+      <Listbox value={selectedRegion} onChange={onChange}>
         <Listbox.Button className="flex h-full w-full items-center justify-between bg-transparent px-6">
           <div>{selectedRegion.name}</div>
           <BiChevronDown className="ml-2" />
         </Listbox.Button>
         <Listbox.Options
-          className="z-100 relative mt-1 w-48 rounded 
-                    bg-white py-1 text-sm shadow dark:bg-dark-blue"
+          className="z-100 text-sm relative mt-1 w-48 
+                    rounded bg-white py-1 shadow dark:bg-dark-blue"
         >
           {regions.map((region) => (
             <Listbox.Option

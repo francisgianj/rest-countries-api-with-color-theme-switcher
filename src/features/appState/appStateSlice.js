@@ -16,7 +16,7 @@ const appStateSlice = createSlice({
       state.queryCountry = action.payload;
     },
     resetSelectedRegion: (state) => {
-      state.selectedRegion = "";
+      state.selectedRegion = initialState.selectedRegion
     },
     resetQueryCountry: (state) => {
       state.queryCountry = "";

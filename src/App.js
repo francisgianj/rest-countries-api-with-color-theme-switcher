@@ -1,12 +1,24 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+
 import Header from "./components/Header";
-import Main from "./components/Main";
+
+import Main from "./pages/Main";
+import Country from "./pages/Country";
 
 function App() {
   return (
-    <div className="h-screen bg-very-light-gray font-body text-very-dark-blue2 dark:bg-very-dark-blue1 dark:text-white">
-      <Header />
-      <Main />
-    </div>
+    <>
+      <Router>
+        <div className=" font-body h-full bg-very-light-gray font-nunito-sans text-homepage-items text-very-dark-blue2 dark:bg-very-dark-blue1 dark:text-white">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/country/:name" element={<Country />} />
+          </Routes>
+        </div>
+      </Router>
+    </>
   );
 }
 

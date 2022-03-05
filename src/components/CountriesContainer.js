@@ -1,36 +1,25 @@
 import CountryInfo from "./CountryInfo";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function CountriesContainer() {
+  const { countries, isError, isLoading, errorMessage } = useSelector(
+    (state) => state.country
+  );
+
   return (
-    <div className="flex justify-between">
-      <CountryInfo
-        flag="https://flagcdn.com/de.svg"
-        countryName="Germany"
-        population="81,770,900"
-        region="Europe"
-        capital="Berlin"
-      />
-      <CountryInfo
-        flag="https://flagcdn.com/us.svg"
-        countryName="United States of America"
-        population="81,770,900"
-        region="Americas"
-        capital="Washington, D.C"
-      />
-      <CountryInfo
-        flag="https://flagcdn.com/ph.svg"
-        countryName="Philippines"
-        population="81,770,900"
-        region="Asia"
-        capital="Manila"
-      />
-      <CountryInfo
-        flag="https://flagcdn.com/kr.svg"
-        countryName="South Korea"
-        population="81,770,900"
-        region="Asia"
-        capital="Seoul"
-      />
+    <div className="flex flex-wrap justify-between">
+      {countries.map((country, id) => (
+        <CountryInfo
+          key={id}
+          flag={country.flags.png}
+          flagAlt={country.flag}
+          countryName={country.name}
+          population={country.population}
+          region={country.region}
+          capital={country.capital}
+        />
+      ))}
     </div>
   );
 }
