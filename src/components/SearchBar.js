@@ -1,27 +1,29 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Combobox } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { reset, getCountry, resetCountries } from "../features/country/countrySlice";
-import { setQueryCountry } from "../features/appState/appStateSlice";
+import { reset, getCountry, resetCountries, getAllCountries } from "../features/country/countrySlice";
+import { setQueryCountry, resetSelectedRegion } from "../features/appState/appStateSlice";
 
 function SearchBar() {
-  const { queryCountry } = useSelector((state) => state.appState);
+  const { queryCountry, selectedRegion } = useSelector((state) => state.appState);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (queryCountry.length > 0) {
+    
+    if (queryCountry) {
       dispatch(getCountry(queryCountry));
-    } else {
-      dispatch(resetCountries());
+    } else if (!queryCountry && selectedRegion.id === 0) {
+      dispatch(getAllCountries());
     }
-  }, [queryCountry]);
+  }, [queryCountry, dispatch]);
 
   let typingTimer;
-  let doneTypingInterval = 500;
+  let doneTypingInterval = 200;
 
   const onKeyUp = (e) => {
+    if (selectedRegion.id !== 0) dispatch(resetSelectedRegion());
     clearTimeout(typingTimer);
     typingTimer = setTimeout(() => {
       dispatch(setQueryCountry(e.target.value));
@@ -36,6 +38,7 @@ function SearchBar() {
   // Consider Changing the Search Bar to a normal input field because it is the same.
   return (
     <Combobox
+      value={queryCountry}
       as="div"
       className="w-[30rem] rounded bg-white text-very-dark-blue2 shadow dark:bg-dark-blue dark:text-white"
     >

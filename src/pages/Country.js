@@ -1,8 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import Spinner from "../components/Spinner";
+import { Link, useParams } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCountryByCode } from "../features/country/countrySlice";
 
-// US Flag https://flagcdn.com/w320/us.png
 function Country() {
   return (
     <div className="px-20 pb-12">
@@ -15,14 +17,10 @@ function Country() {
         </Link>
       </div>
       <div className="flex">
-        <img
-          className=" mr-36 h-[25rem] w-[35rem]"
-          src="https://flagcdn.com/w320/be.png"
-          alt="us"
-        />
+        <img className=" mr-36 h-[25rem] w-[35rem]" src="xddd" alt="us" />
         <div>
           <h1 className="mb-11 text-[1.5rem] font-extrabold">Belgium</h1>
-          <div className="flex mb-20">
+          <div className="mb-20 flex">
             <div className="mr-28">
               <p>
                 <span className="font-semibold">Native Name: </span>Belgie
@@ -56,7 +54,7 @@ function Country() {
             </div>
           </div>
           <div className="flex">
-            <p className="font-semibold mr-2">Border Countries: </p>
+            <p className="mr-2 font-semibold">Border Countries: </p>
             <div>
               <button className="mx-1 h-7 w-24 rounded bg-white dark:bg-dark-blue">
                 France

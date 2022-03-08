@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCountriesByRegion,
   resetCountries,
+  getAllCountries,
   reset,
 } from "../features/country/countrySlice";
 import {
   setSelectedRegion,
   resetSelectedRegion,
+  setQueryCountry,
 } from "../features/appState/appStateSlice";
 
 const regions = [
@@ -25,7 +27,9 @@ const regions = [
 function RegionSelector() {
   const dispatch = useDispatch();
 
-  const { selectedRegion } = useSelector((state) => state.appState);
+  const { selectedRegion, queryCountry } = useSelector(
+    (state) => state.appState
+  );
 
   const { isError, errorMessage } = useSelector((state) => state.country);
 
@@ -45,16 +49,19 @@ function RegionSelector() {
     }
 
     if (selectedRegion.id !== 0) {
+      dispatch(setQueryCountry(""));
       dispatch(getCountriesByRegion(selectedRegion.name));
+    } else if (queryCountry) {
+      console.log("hehe")
     } else {
-      dispatch(resetCountries());
+      dispatch(getAllCountries());
     }
 
     return () => {
       window.removeEventListener("keydown", onKeyDown);
       dispatch(reset());
     };
-  }, [selectedRegion, isError, errorMessage, dispatch]);
+  }, [selectedRegion, queryCountry, isError, errorMessage, dispatch]);
 
   const onChange = (e) => {
     dispatch(setSelectedRegion(e));

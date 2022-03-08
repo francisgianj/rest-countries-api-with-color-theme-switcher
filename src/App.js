@@ -14,7 +14,7 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Main />} />
-            <Route path="/country/:name" element={<Country />} />
+            <Route path="/country/:cca2" element={<Country />} />
           </Routes>
         </div>
       </Router>

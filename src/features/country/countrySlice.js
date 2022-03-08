@@ -3,6 +3,7 @@ import countryService from "./countryService";
 
 const initialState = {
   countries: [],
+  countryDetails: {},
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -45,6 +46,23 @@ export const getCountriesByRegion = createAsyncThunk(
   }
 );
 
+export const getCountryByCode = createAsyncThunk(
+  "country/getCountryByCode",
+  async (code, thunkAPI) => {
+    try {
+      return await countryService.getCountryByCode(code);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const getAllCountries = createAsyncThunk(
   "country/getAllCountries",
   async (thunkAPI) => {
@@ -74,7 +92,7 @@ const countrySlice = createSlice({
     },
     resetCountries: (state) => {
       state.countries = [];
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -113,6 +131,19 @@ const countrySlice = createSlice({
         state.countries = action.payload;
       })
       .addCase(getAllCountries.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.errorMessage = action.payload;
+      })
+      .addCase(getCountryByCode.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getCountryByCode.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.countryDetails = action.payload;
+      })
+      .addCase(getCountryByCode.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.errorMessage = action.payload;
