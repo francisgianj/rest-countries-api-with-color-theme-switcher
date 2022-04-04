@@ -6,6 +6,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCountryByCode } from "../features/country/countrySlice";
 
 function Country() {
+  const dispatch = useDispatch();
+
+  const { cca2 } = useParams();
+  const { countryDetails } = useSelector((state) => state.country);
+
+  useEffect(() => {
+    dispatch(getCountryByCode(cca2));
+  }, []);
+
+
   return (
     <div className="px-20 pb-12">
       <div className="mb-20 block">
@@ -17,7 +27,7 @@ function Country() {
         </Link>
       </div>
       <div className="flex">
-        <img className=" mr-36 h-[25rem] w-[35rem]" src="xddd" alt="us" />
+        <img className=" mr-36 h-[25rem] w-[35rem]" src={countryDetails.flags.png} alt="us" />
         <div>
           <h1 className="mb-11 text-[1.5rem] font-extrabold">Belgium</h1>
           <div className="mb-20 flex">

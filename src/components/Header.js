@@ -1,8 +1,10 @@
 import { BsMoon, BsFillMoonFill } from "react-icons/bs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 
 function Header() {
+  const [isDarkMode, setIsDarkMode] = useToggle();
+
   let darkMode = false;
 
   if (localStorage.theme) {
@@ -27,7 +29,7 @@ function Header() {
   }, [enabled]);
 
   return (
-    <header id="header" className="shadow-sm ring-1 ring-black/5 mb-12">
+    <header id="header" className="mb-12 shadow-sm ring-1 ring-black/5">
       <div className="flex justify-between bg-white px-20 py-7 dark:bg-dark-blue">
         <div className="">
           <h1 className="text-detail-page font-extrabold">
@@ -47,5 +49,41 @@ function Header() {
     </header>
   );
 }
+
+// useToggle Hook
+const useToggle = (initialValue = false) => {
+  const [state, setState] = useState(initialValue);
+
+  const toggle = useCallback(() => setState((state) => !state), []);
+
+  return [state, toggle];
+};
+
+const useToggleDarkMode = (initialValue = false) => {
+  if (localStorage.theme && localStorage.theme === "dark") {
+    initialValue = true;
+  } else {
+    // On first visit of the website or if Dark Mode isn't turned on
+    localStorage.setItem("theme", "light");
+  }
+  const [state, setState] = useState(initialValue);
+  const toggle = useCallback(() => setState((state) => !state), []);
+
+  useEffect(() => {
+    const bodyClass = document.documentElement.classList;
+
+    if (!state) {
+      bodyClass.remove("dark");
+      localStorage.setItem("theme", "light");
+    } else {
+      bodyClass.add("dark");
+      localStorage.setItem("theme", "dark");
+    }
+  }, [state]);
+
+  
+
+  return [state, toggle];
+};
 
 export default Header;

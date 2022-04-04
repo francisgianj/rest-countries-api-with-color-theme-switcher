@@ -78,7 +78,7 @@ function RegionSelector() {
           <BiChevronDown className="ml-2" />
         </Listbox.Button>
         <Listbox.Options
-          className="z-100 text-sm relative mt-1 w-48 
+          className="relative text-sm mt-1 w-48 
                     rounded bg-white py-1 shadow dark:bg-dark-blue"
         >
           {regions.map((region) => (
